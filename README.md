@@ -1,5 +1,5 @@
 # pushongit
-A script to push on GitHub quickly.
+A script to push on Git quickly.
 
 If you don't need to specify what your commit changes, you can use this script which automatically creates a commit with the following format:
 

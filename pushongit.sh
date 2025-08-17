@@ -1,21 +1,22 @@
 #!/bin/bash
-format=.giti
-filename=./.gitignore
-if [ ! -f "$filename" ]; then
-	touch $filename
-	echo "*$format" > $filename
-else
-	if ! grep -qw "*$format" $filename; then
-  		echo "*$format" >> $filename
-	fi
+
+# Make sure there is a Git repository:
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "ERROR: No Git repositories found."
+    exit 1
 fi
-filename=./lastcommit$format
-if [ ! -f "$filename" ]; then
-	touch $filename
-	echo 0 > $filename
+
+# Extract the number after the word "Commit":
+commit_number=$(git log -1 --pretty=%B | sed -E 's/.*Commit ([0-9]+).*/\1/')
+
+# If not found, assign zero:
+if [[ -z "$commit_number" ]]; then
+	commit_number=0
 fi
-numbercommit=$(<$filename)
-echo $numbercommit
-((numbercommit++))
-message="Commit ${numbercommit} ($(date +%F_%T))"
-git add . && git commit -m "$message" && git push && echo $numbercommit > $filename
+
+echo "$commit_number"
+
+echo $commit_number
+((commit_number++))
+message="Commit ${commit_number} ($(date +%F_%T))"
+git add . && git commit -m "$message" && git push && echo "Done"
